@@ -1,0 +1,67 @@
+name: Destroy project
+run-name: Destroying project 😵
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.4.0
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Generate TF files
+      run: python scripts/generate_state_files.py
+
+    - name: Login to AWS
+      run: |
+        aws configure set region $(jq -r .region variables.json)
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    - name: Terraform Init Code
+      id: init-code
+      working-directory: ./aws/code
+      run: terraform init -backend-config="code.config" 
+
+    - name: Terraform destroy code
+      id: apply-code
+      working-directory: ./aws/code
+      run: terraform destroy -auto-approve
+      env:
+        TF_VAR_github_oauth_token: ${{ secrets.GH_ACCESS_TOKEN }}
+
+    - name: Terraform Init ECS
+      id: init-ecs
+      working-directory: ./aws/ecs
+      run: terraform init -backend-config="ecs.config"
+
+    - name: Terraform destroy ECS
+      id: apply-ecs
+      working-directory: ./aws/ecs
+      run: terraform destroy -auto-approve
+
+    - name: Terraform init ELB
+      id: init-elb
+      working-directory: ./aws/elb
+      run: terraform init -backend-config="elb.config"
+
+    - name: Terraform destroy ELB
+      id: destroy-elb
+      working-directory: ./aws/elb
+      run: terraform destroy -auto-approve 
+
+    - name: Terraform init Infra
+      id: init-infra
+      working-directory: ./aws/infra
+      run: terraform init -backend-config="infra.config" 
+
+    - name: Terraform destroy Infra
+      id: destroy-infra
+      working-directory: ./aws/infra
+      run: terraform destroy -auto-approve 
