@@ -1,0 +1,30 @@
+{
+  
+    "project_name": "checkawsip",
+    "region": "us-east-2",
+    "vpc_cidr": "10.24.0.0/16",
+    "pipeline_buket": "checkawsip-artifacts",
+    "domain_name": "checkawsip.com",
+
+    "docker_app": {
+      "ci_project_name": "checkawsip",
+      "ci_project_user": "andreip024",
+      "ci_project_url": "https://github.com/andreip024/checkawsip.git"
+    },
+
+    "terraform": {
+      "remote_state_key_infra": "infra.tfstate",
+      "remote_state_key_elb": "elb.tfstate",
+      "remote_state_key_ecs": "ecs.tfstate",
+      "remote_state_key_code": "code.tfstate",
+      "remote_state_bucket": "checkawsip-terraform-remote-state"
+    },
+
+    "ecs": {
+      "min_capacity": 2,
+      "desired_capacity": 3,
+      "max_capacity": 5,
+      "container_port": 5000
+    }
+  }
+

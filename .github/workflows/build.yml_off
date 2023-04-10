@@ -1,0 +1,90 @@
+name: Build project
+run-name: Building project 🚀
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.4.0
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Generate state files
+      run: python scripts/generate_state_files.py
+
+    - name: Login to AWS
+      run: |
+        aws configure set region $(jq -r .region variables.json)
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    - name: Terraform Init INFRA
+      id: init-infra
+      working-directory: ./aws/infra
+      run: terraform init -backend-config="infra.config" 
+
+    - name: Terraform Validate INFRA
+      id: validate-infra
+      working-directory: ./aws/infra
+      run: terraform validate
+
+    - name: Terraform Apply INFRA
+      id: apply-infra
+      working-directory: ./aws/infra
+      run: terraform apply -auto-approve
+
+    - name: Terraform Init ELB
+      id: init-elb
+      working-directory: ./aws/elb
+      run: terraform init -backend-config="elb.config" 
+
+    - name: Terraform Validate ELB
+      id: validate-elb
+      working-directory: ./aws/elb
+      run: terraform validate
+
+    - name: Terraform Apply ELB
+      id: apply-elb
+      working-directory: ./aws/elb
+      run: terraform apply -auto-approve
+    
+    - name: Terraform Init ECS
+      id: init-ecs
+      working-directory: ./aws/ecs
+      run: terraform init -backend-config="ecs.config" 
+
+    - name: Terraform Validate ECS
+      id: validate-ecs
+      working-directory: ./aws/ecs
+      run: terraform validate
+
+    - name: Terraform Apply ECS
+      id: apply-ecs
+      working-directory: ./aws/ecs
+      run: terraform apply -auto-approve
+
+    - name: Generate buildspec file
+      run: python scripts/generate_buildspec.py
+
+    - name: Terraform Init Code
+      id: init-code
+      working-directory: ./aws/code
+      run: terraform init -backend-config="code.config" 
+
+    - name: Terraform Validate Code
+      id: validate-code
+      working-directory: ./aws/code
+      run: terraform validate
+
+    - name: Terraform Apply code
+      id: apply-code
+      working-directory: ./aws/code
+      run: terraform apply -auto-approve
+      env:
+        TF_VAR_github_oauth_token: ${{ secrets.GH_ACCESS_TOKEN }}
