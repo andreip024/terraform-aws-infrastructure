@@ -36,7 +36,7 @@
 
 This project aims to create a highly available and fault-tolerant infrastructure in AWS for a dockerized application using Terraform. The infrastructure includes multiple Availability Zones, Elastic Load Balancer, ECS Fargate, Auto Scaling Groups, and other necessary resources that provide high availability and fault tolerance.
 
-One of the key features of this project is that it is highly configurable. All the necessary variables, such as the application name, region, docker repo, domain and many more are defined in a separate variables.json file, making it easy to update and maintain the application configuration. 
+One of the key features of this project is that it is highly configurable. All the necessary variables, such as the application name, region, docker repo, domain and many more are defined in a separate **variables.json** file, making it easy to update and maintain the application configuration. 
 ## Project Arhitecture
 
 ![Project Arhitecture](https://images-0168749535.s3.eu-central-1.amazonaws.com/AWS_Project_Arhitecture.jpg)
