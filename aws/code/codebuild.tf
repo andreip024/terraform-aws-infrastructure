@@ -24,7 +24,8 @@ resource "aws_codebuild_project" "code_build" {
 
   logs_config {
     cloudwatch_logs {
-      group_name  = "${local.project_name}-CW"
+      group_name  = data.terraform_remote_state.infra.outputs.cloudwach_group
+      stream_name = "CodeBuild"
     }
   }
 
