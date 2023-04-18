@@ -33,10 +33,13 @@
 ---
 
 ## About
+Part of a cross-project with [CheckAWSip](https://github.com/andreip024/checkawsip)
 
 This project aims to create a highly available and fault-tolerant infrastructure in AWS for a dockerized application using Terraform. The infrastructure includes multiple Availability Zones, Elastic Load Balancer, ECS Fargate, Auto Scaling Groups, and other necessary resources that provide high availability and fault tolerance.
 
-One of the key features of this project is that it is highly configurable. All the necessary variables, such as the application name, region, docker repo, domain and many more are defined in a separate **variables.json** file, making it easy to update and maintain the application configuration. 
+One of the key features of this project is its high configurability. All the necessary variables, such as the application name, region, Docker repository, domain, and many more, are defined in a separate **variables.json** file, making it easy to update and maintain the application configuration.
+
+
 ## Project Arhitecture
 
 ![Project Arhitecture](https://images-0168749535.s3.eu-central-1.amazonaws.com/AWS_Project_Arhitecture.jpg)
@@ -75,6 +78,10 @@ One of the key features of this project is that it is highly configurable. All t
 |remote_state_key_ecs          |Name of remote state file for ecs - **DO NOT EDIT**|
 |remote_state_key_code          |Name of remote state file for code - **DO NOT EDIT**|
 |remote_state_bucket          |Name of the S3 bucket for Terraform remote states (check prerequisites)|
+|logs_retentions_days          |Number of days for logs to be stored|
+|limit_amount          |Buget limit amount|
+|incremental_value          |Value of incremental alerting on budget|
+|email_notification          |Email address for sending Budgets Alerts|
 |min_capacity          |Minimum number of running Tasks in ECS|
 |desired_capacity          |Desired number of running Tasks in ECS|
 |max_capacity          |Maximum number of running Tasks in ECS|
@@ -88,11 +95,11 @@ For deployment, this projects uses GitHub Actions.
 
 ## Roadmap
 
-- [ ] Send containers logs to AWS CloudWatch;
+- [X] Send containers logs to AWS CloudWatch;
+- [X] Create budget and incremental alerts;
 - [ ] Add a parameter for using a domain or not;
 - [ ] Add remote state in DynamoDB;
 - [ ] Restrict access to 443 port;
-- [ ] Create budget and threshold alerts;
 - [ ] Create a blue-green deployment using AWS CodeDeploy;
 - [ ] Add tests in AWS CodePipeline;
 - [ ] Add Cloudflare integration;
@@ -105,6 +112,13 @@ For deployment, this projects uses GitHub Actions.
 
 
 ## Changelog
+
+v1.1.0 [18-Apr-2023]
+- Create a CloudWach group
+- Add ECS Tasks logs to CloudWach group created
+- Add ClodeBuild logs to CloudWach group created
+- Add budget and incremental alerting
+- Update documentation
 
 v1.0.0 [10-Apr-2023] - Release
 

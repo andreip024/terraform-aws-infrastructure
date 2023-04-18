@@ -20,6 +20,16 @@
       "remote_state_bucket": "checkawsip-terraform-remote-state"
     },
 
+    "cloudwach": {
+      "logs_retentions_days": 90
+    },
+
+    "budget": {
+      "limit_amount": 100,
+      "incremental_value": 10,
+      "email_notification": "your_email_address@domain.com"
+    },
+
     "ecs": {
       "min_capacity": 2,
       "desired_capacity": 3,
